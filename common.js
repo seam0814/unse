@@ -35,6 +35,23 @@
   if(grid){function card(t){return '<a class="toolcard" href="'+ROOT+t.path+'">'+(t.pop?'<span class="pop">인기</span>':'')+'<span class="ic">'+t.ic+'</span><b>'+t.title+'</b><small>'+t.desc+'</small></a>'}
     var g=h('<div class="grid"></div>');TOOLS.forEach(function(t){g.appendChild(h(card(t)))});grid.appendChild(g)}
 
+  /* ===== 생년월일 드롭다운(년·월·일) — 달력 대신 탭 3번 ===== */
+  window.dateSelect=function(mount){
+    mount.innerHTML='<div class="dsel"><select class="dy"></select><select class="dm"></select><select class="dd"></select></div>';
+    var now=new Date().getFullYear();
+    var ys='<option value="">년</option>';for(var y=now;y>=1930;y--)ys+='<option value="'+y+'">'+y+'</option>';
+    var ms='<option value="">월</option>';for(var m=1;m<=12;m++)ms+='<option value="'+m+'">'+m+'월</option>';
+    var dy=mount.querySelector(".dy"),dm=mount.querySelector(".dm"),dd=mount.querySelector(".dd");
+    dy.innerHTML=ys;dm.innerHTML=ms;
+    function fillDays(){var y=+dy.value,m=+dm.value,max=31;if(y&&m)max=new Date(y,m,0).getDate();
+      var cur=dd.value,s='<option value="">일</option>';for(var d=1;d<=max;d++)s+='<option value="'+d+'">'+d+'일</option>';
+      dd.innerHTML=s;if(cur&&+cur<=max)dd.value=cur;}
+    dy.addEventListener("change",fillDays);dm.addEventListener("change",fillDays);fillDays();
+    return {get:function(){var y=+dy.value,m=+dm.value,d=+dd.value;return(y&&m&&d)?{y:y,m:m,d:d}:null},
+      val:function(){return(dy.value&&dm.value&&dd.value)?dy.value+"-"+dm.value+"-"+dd.value:""},
+      set:function(v){if(!v)return;var p=(""+v).split("-");if(p.length<3)return;dy.value=+p[0];dm.value=+p[1];fillDays();dd.value=+p[2];}};
+  };
+
   /* ===== 결과 공유 카드 (설정 0, 순수 클라이언트) ===== */
   function rr(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()}
   function wrapC(x,t,cx,y,maxW,lh){var line="",yy=y;for(var i=0;i<t.length;i++){var test=line+t[i];

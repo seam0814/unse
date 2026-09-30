@@ -14,10 +14,8 @@
   <h1>💘 궁합 보기</h1>
   <p class="sub">두 사람의 생년월일로 사주 궁합을 계산해 드려요.</p>
   <div class="tool">
-    <div class="row2">
-      <div class="field"><label>나 (양력 생일)</label><input id="d1" type="date"></div>
-      <div class="field"><label>상대 (양력 생일)</label><input id="d2" type="date"></div>
-    </div>
+    <div class="field"><label>나 (양력 생일)</label><div id="d1Sel"></div></div>
+    <div class="field" style="margin-top:12px"><label>상대 (양력 생일)</label><div id="d2Sel"></div></div>
     <button class="btn" id="go">궁합 점수 보기</button>
     <div class="err" id="err"></div>
     <div class="result" id="result">
@@ -42,8 +40,8 @@
 <script>
 (function(){
   var $=function(s){return document.querySelector(s)};
-  var d1=$("#d1"),d2=$("#d2"),err=$("#err"),result=$("#result");
-  d1.value=store.get("birth","");
+  var D1=dateSelect($("#d1Sel")),D2=dateSelect($("#d2Sel")),err=$("#err"),result=$("#result");
+  D1.set(store.get("birth",""));
   var REL={
     생조:"서로 기운을 채워주는 조합. 함께 있으면 안정되고 성장하는 관계예요.",
     설기:"한쪽이 다른 쪽을 돌보고 키워주는 조합. 헌신이 아름답지만 균형을 잊지 마세요.",
@@ -56,11 +54,10 @@
   $("#go").addEventListener("click",function(){
     err.classList.remove("show");result.classList.remove("show");
     if(!Saju.ready()){showErr("라이브러리를 불러오지 못했어요. 새로고침 해주세요.");return}
-    if(!d1.value||!d2.value){showErr("두 사람의 생일을 모두 입력하세요.");return}
-    store.set("birth",d1.value);track("gunghap_view");
+    var a=D1.get(),b=D2.get();if(!a||!b){showErr("두 사람의 생일을 모두 선택하세요.");return}
+    store.set("birth",D1.val());track("gunghap_view");
     try{
-      var a=d1.value.split("-"),b=d2.value.split("-");
-      var A=Saju.compute(+a[0],+a[1],+a[2],0,false),B=Saju.compute(+b[0],+b[1],+b[2],0,false);
+      var A=Saju.compute(a.y,a.m,a.d,0,false),B=Saju.compute(b.y,b.m,b.d,0,false);
       var g=Saju.gunghap(A,B);lastScore=g.score;
       $("#score").textContent=g.score+"점";
       var band=g.score>=85?"천생연분에 가까운 조합이에요! 💞":g.score>=70?"제법 잘 어울리는 조합이에요 😊":g.score>=58?"노력하면 좋아지는 조합이에요 🙂":"자극이 강한, 밀당 조합이에요 🔥";

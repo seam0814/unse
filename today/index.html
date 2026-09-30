@@ -14,7 +14,7 @@
   <h1>🌙 오늘의 운세</h1>
   <p class="sub" id="todayLabel">오늘 날짜의 기운과 내 사주를 비교해 풀어드려요.</p>
   <div class="tool">
-    <div class="field"><label>생년월일 (양력)</label><input id="date" type="date"></div>
+    <div class="field"><label>생년월일 (양력)</label><div id="dateSel"></div></div>
     <button class="btn" id="go">오늘의 운세 보기</button>
     <div class="err" id="err"></div>
     <div class="result" id="result">
@@ -39,9 +39,9 @@
 <script>
 (function(){
   var $=function(s){return document.querySelector(s)};
-  var dateIn=$("#date"),err=$("#err"),result=$("#result"),lastCard=null;
+  var D=dateSelect($("#dateSel")),err=$("#err"),result=$("#result"),lastCard=null;
   $("#card").addEventListener("click",function(){if(lastCard)shareCard(lastCard)});
-  dateIn.value=store.get("birth","");
+  D.set(store.get("birth",""));
   var now=new Date();$("#todayLabel").textContent=(now.getMonth()+1)+"월 "+now.getDate()+"일, 오늘의 기운과 내 사주를 비교해 풀어드려요.";
   var MSG={
     생조:{h:"순풍의 날 ⛵",p:"오늘 기운이 나를 밀어줍니다. 도움과 귀인이 따르니 부탁·제안·시작하기 좋은 날. 자신 있게 움직이세요."},
@@ -54,10 +54,10 @@
   $("#go").addEventListener("click",function(){
     err.classList.remove("show");result.classList.remove("show");
     if(!Saju.ready()){showErr("라이브러리를 불러오지 못했어요. 새로고침 해주세요.");return}
-    if(!dateIn.value){showErr("생년월일을 입력하세요.");return}
-    var p=dateIn.value.split("-");store.set("birth",dateIn.value);track("today_view");
+    var bd=D.get();if(!bd){showErr("생년월일을 모두 선택하세요.");return}
+    store.set("birth",D.val());track("today_view");
     try{
-      var me=Saju.compute(+p[0],+p[1],+p[2],0,false);
+      var me=Saju.compute(bd.y,bd.m,bd.d,0,false);
       var t=Saju.compute(now.getFullYear(),now.getMonth()+1,now.getDate(),now.getHours(),true);
       var rel=Saju.relation(me.dayOh,t.dayOh),m=MSG[rel]||MSG.비화;
       var seed=now.getFullYear()*372+(now.getMonth()+1)*31+now.getDate();

@@ -14,10 +14,8 @@
   <h1>🔮 사주팔자 풀이</h1>
   <p class="sub">생년월일시를 넣으면 내 사주팔자와 타고난 성향을 풀어드려요.</p>
   <div class="tool">
-    <div class="row2">
-      <div class="field"><label>생년월일 (양력)</label><input id="date" type="date"></div>
-      <div class="field"><label>태어난 시각</label><select id="hour"></select></div>
-    </div>
+    <div class="field"><label>생년월일 (양력)</label><div id="dateSel"></div></div>
+    <div class="field" style="margin-top:12px"><label>태어난 시각</label><select id="hour"></select></div>
     <button class="btn" id="go">내 사주 보기</button>
     <div class="err" id="err"></div>
     <div class="result" id="result">
@@ -46,20 +44,20 @@
 <script>
 (function(){
   var $=function(s){return document.querySelector(s)};
-  var dateIn=$("#date"),hourIn=$("#hour"),err=$("#err"),result=$("#result"),lastCard=null;
+  var D=dateSelect($("#dateSel")),hourIn=$("#hour"),err=$("#err"),result=$("#result"),lastCard=null;
   $("#card").addEventListener("click",function(){if(lastCard)shareCard(lastCard)});
   var opt='<option value="-1">모름</option>';for(var i=0;i<24;i++){opt+='<option value="'+i+'">'+(i<10?"0"+i:i)+':00 ~ '+(i<10?"0"+i:i)+':59</option>'}
   hourIn.innerHTML=opt;
-  dateIn.value=store.get("birth","");if(store.get("bhour",""))hourIn.value=store.get("bhour");
+  D.set(store.get("birth",""));if(store.get("bhour",""))hourIn.value=store.get("bhour");
   function showErr(m){err.textContent=m;err.classList.add("show")}
   $("#go").addEventListener("click",function(){
     err.classList.remove("show");result.classList.remove("show");
     if(!Saju.ready()){showErr("만세력 라이브러리를 불러오지 못했어요. 새로고침 해주세요.");return}
-    if(!dateIn.value){showErr("생년월일을 입력하세요.");return}
-    var p=dateIn.value.split("-"),hv=parseInt(hourIn.value),hasTime=hv>=0;
-    store.set("birth",dateIn.value);store.set("bhour",hourIn.value);track("saju_view");
+    var bd=D.get();if(!bd){showErr("생년월일을 모두 선택하세요.");return}
+    var hv=parseInt(hourIn.value),hasTime=hv>=0;
+    store.set("birth",D.val());store.set("bhour",hourIn.value);track("saju_view");
     try{
-      var r=Saju.compute(+p[0],+p[1],+p[2],hasTime?hv:0,hasTime);
+      var r=Saju.compute(bd.y,bd.m,bd.d,hasTime?hv:0,hasTime);
       var labs={year:"년주",month:"월주",day:"일주 (나)",time:"시주"};
       var order=hasTime?["year","month","day","time"]:["year","month","day"];
       var ph="";order.forEach(function(k){var x=r.P[k];
