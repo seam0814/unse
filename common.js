@@ -37,19 +37,20 @@
 
   /* ===== 생년월일 드롭다운(년·월·일) — 달력 대신 탭 3번 ===== */
   window.dateSelect=function(mount){
-    mount.innerHTML='<div class="dsel"><select class="dy"></select><select class="dm"></select><select class="dd"></select></div>';
-    var now=new Date().getFullYear();
-    var ys='<option value="">년</option>';for(var y=now;y>=1930;y--)ys+='<option value="'+y+'">'+y+'</option>';
-    var ms='<option value="">월</option>';for(var m=1;m<=12;m++)ms+='<option value="'+m+'">'+m+'월</option>';
-    var dy=mount.querySelector(".dy"),dm=mount.querySelector(".dm"),dd=mount.querySelector(".dd");
-    dy.innerHTML=ys;dm.innerHTML=ms;
-    function fillDays(){var y=+dy.value,m=+dm.value,max=31;if(y&&m)max=new Date(y,m,0).getDate();
-      var cur=dd.value,s='<option value="">일</option>';for(var d=1;d<=max;d++)s+='<option value="'+d+'">'+d+'일</option>';
-      dd.innerHTML=s;if(cur&&+cur<=max)dd.value=cur;}
-    dy.addEventListener("change",fillDays);dm.addEventListener("change",fillDays);fillDays();
-    return {get:function(){var y=+dy.value,m=+dm.value,d=+dd.value;return(y&&m&&d)?{y:y,m:m,d:d}:null},
+    mount.innerHTML='<div class="dsel">'
+      +'<input class="dy" type="number" inputmode="numeric" placeholder="예) 1990" min="1900" max="2100">'
+      +'<input class="dm" type="number" inputmode="numeric" placeholder="월" min="1" max="12">'
+      +'<input class="dd" type="number" inputmode="numeric" placeholder="일" min="1" max="31"></div>';
+    var dy=mount.querySelector(".dy"),dm=mount.querySelector(".dm"),dd=mount.querySelector(".dd"),thisY=new Date().getFullYear();
+    // 자동 포커스 이동: 년 4자리 -> 월, 월 2자리 -> 일
+    dy.addEventListener("input",function(){if(dy.value.length>=4)dm.focus()});
+    dm.addEventListener("input",function(){if(+dm.value>=2||dm.value.length>=2)dd.focus()});
+    return {get:function(){var y=+dy.value,m=+dm.value,d=+dd.value;
+        if(!(y>=1900&&y<=thisY&&m>=1&&m<=12&&d>=1))return null;
+        if(d>new Date(y,m,0).getDate())return null;
+        return {y:y,m:m,d:d}},
       val:function(){return(dy.value&&dm.value&&dd.value)?dy.value+"-"+dm.value+"-"+dd.value:""},
-      set:function(v){if(!v)return;var p=(""+v).split("-");if(p.length<3)return;dy.value=+p[0];dm.value=+p[1];fillDays();dd.value=+p[2];}};
+      set:function(v){if(!v)return;var p=(""+v).split("-");if(p.length<3)return;dy.value=+p[0];dm.value=+p[1];dd.value=+p[2];}};
   };
 
   /* ===== 결과 공유 카드 (설정 0, 순수 클라이언트) ===== */

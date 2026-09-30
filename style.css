@@ -86,4 +86,6 @@ details p{color:var(--muted);margin:.6em 0 0}
 .rev .rh span{color:#f5a623;font-size:.82rem}
 .rev p{margin:.3em 0 0;font-size:.92rem;color:var(--fg)}
 .dsel{display:flex;gap:8px}
-.dsel select{flex:1;min-width:0}
+.dsel input{flex:1;min-width:0;text-align:center}
+.dsel .dy{flex:1.6}
+.dsel input::-webkit-outer-spin-button,.dsel input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
