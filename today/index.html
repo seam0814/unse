@@ -65,7 +65,7 @@
       $("#reading").innerHTML='<h3>'+m.h+'</h3><p>'+m.p+'</p><p style="color:var(--muted)">오늘의 기운: '+t.dayGanKr+'('+t.dayOh+') · 나의 일간: '+me.dayGanKr+'('+me.dayOh+')</p>';
       $("#lucky").innerHTML='<div class="k"><b>'+lk.color+'</b><span>행운의 색</span></div><div class="k"><b>'+lk.num+'</b><span>행운의 숫자</span></div>';
       lastCard={emoji:"🌙",title:m.h,lines:["행운의 색 "+lk.color+" · 숫자 "+lk.num],share:"오늘 내 운세: "+m.h+" 너도 봐봐 ✨"};
-      reveal(result);
+      reveal(result,null,function(){speak($("#reading"),"오늘 자네의 별자리를 살펴보았네…");});
     }catch(ex){showErr("계산 중 문제가 생겼어요. 날짜를 확인해 주세요.");console.error(ex)}
   });
 })();

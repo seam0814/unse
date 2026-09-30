@@ -65,7 +65,7 @@
       if(g.note.length)rd+='<p style="color:var(--muted)">'+g.note.join(" · ")+'</p>';
       rd+='<p style="color:var(--muted)">나 '+A.dayGanKr+'('+A.dayOh+') · 상대 '+B.dayGanKr+'('+B.dayOh+')</p>';
       $("#reading").innerHTML=rd;
-      reveal(result);
+      reveal(result,null,function(){speak($("#reading"),"두 사람의 인연을 들여다보았네…");});
     }catch(ex){showErr("계산 중 문제가 생겼어요. 날짜를 확인해 주세요.");console.error(ex)}
   });
   $("#share").addEventListener("click",function(){track("gunghap_share");

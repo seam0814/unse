@@ -6,13 +6,22 @@
   if(CLARITY_ID){(function(c,l,a,r,i){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};var t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;var y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y)})(window,document,"clarity","script",CLARITY_ID);}
   window.track=function(n,p){try{if(window.gtag)gtag("event",n,p||{})}catch(e){}try{if(window.clarity)clarity("event",n)}catch(e){}};
   window.store={get:function(k,d){try{var v=localStorage.getItem("unse_"+k);return v===null?d:v}catch(e){return d}},set:function(k,v){try{localStorage.setItem("unse_"+k,v)}catch(e){}}};
-  /* "기운 모으는 중" 연출 후 결과 공개 */
-  window.reveal=function(el,msg){
+  /* 달묘가 기운을 읽는 연출 후 결과 공개 (cb: 공개 직후 실행) */
+  window.reveal=function(el,msg,cb){
     var box=document.createElement("div");box.className="divining";
-    box.innerHTML='<div class="orb"></div><p>'+(msg||"기운을 모으는 중…")+'</p>';
+    box.innerHTML='<div class="orb"></div><p>🐱 달묘가 기운을 읽는 중…</p>';
     el.parentNode.insertBefore(box,el);
     setTimeout(function(){if(box.parentNode)box.remove();el.classList.add("show");
-      try{el.scrollIntoView({behavior:"smooth",block:"nearest"})}catch(e){}},1400);
+      try{el.scrollIntoView({behavior:"smooth",block:"nearest"})}catch(e){}
+      if(typeof cb==="function")cb();},1500);
+  };
+  /* 캐릭터(달묘)가 한 글자씩 말하기 */
+  window.speak=function(el,text){
+    if(!el)return;var w=document.createElement("div");w.className="mascot";
+    w.innerHTML='<div class="avatar">🐱</div><div class="bubble"><span class="say"></span><span class="caret">▋</span></div>';
+    el.insertBefore(w,el.firstChild);
+    var span=w.querySelector(".say"),caret=w.querySelector(".caret"),i=0;
+    (function t(){if(i<=text.length){span.textContent=text.slice(0,i++);setTimeout(t,36)}else if(caret)caret.style.display="none"})();
   };
   var TOOLS=[
     {path:"saju/",     ic:"🔮", title:"사주팔자",   desc:"생년월일시로 내 사주 풀이", cat:"운세", pop:true},

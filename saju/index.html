@@ -71,7 +71,7 @@
       rd+='<p>띠는 <b>'+r.animal+'</b>띠입니다.</p>';
       $("#reading").innerHTML=rd;
       lastCard={emoji:"🔮",title:"내 일간 '"+r.dayGanKr+"' "+dm.t,lines:["강한 기운 "+sw.strong+" · 약한 기운 "+sw.weak,r.animal+"띠"],share:"내 사주 일간은 '"+r.dayGanKr+"' "+dm.t+"! 너도 봐봐 ✨"};
-      reveal(result);
+      reveal(result,null,function(){speak($("#reading"),"흠… 자네의 사주를 찬찬히 읽어보았네. 🐾");});
     }catch(ex){showErr("계산 중 문제가 생겼어요. 날짜를 확인해 주세요.");console.error(ex)}
   });
 })();

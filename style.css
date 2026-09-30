@@ -89,3 +89,24 @@ details p{color:var(--muted);margin:.6em 0 0}
 .dsel input{flex:1;min-width:0;text-align:center}
 .dsel .dy{flex:1.6}
 .dsel input::-webkit-outer-spin-button,.dsel input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+/* 캐릭터(달묘) 말풍선 */
+.mascot{display:flex;gap:10px;align-items:flex-start;margin-bottom:14px}
+.mascot .avatar{flex:0 0 auto;width:46px;height:46px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:0 4px 14px rgba(124,92,255,.4)}
+.mascot .bubble{background:var(--drop);border:1px solid var(--border);border-radius:14px;border-top-left-radius:4px;padding:10px 14px;font-size:.95rem;color:var(--fg);min-height:22px}
+.mascot .caret{color:var(--accent);animation:blink 1s step-start infinite}
+/* 밤하늘 별 배경 */
+:root{--star:rgba(124,92,255,.30)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--star:rgba(255,255,255,.55)}}
+:root[data-theme="dark"]{--star:rgba(255,255,255,.55)}
+body{background:
+  radial-gradient(1.5px 1.5px at 12% 16%,var(--star),transparent),
+  radial-gradient(1px 1px at 68% 10%,var(--star),transparent),
+  radial-gradient(1.2px 1.2px at 28% 60%,var(--star),transparent),
+  radial-gradient(1px 1px at 82% 40%,var(--star),transparent),
+  radial-gradient(1.4px 1.4px at 50% 82%,var(--star),transparent),
+  radial-gradient(1px 1px at 90% 72%,var(--star),transparent),
+  radial-gradient(1px 1px at 44% 30%,var(--star),transparent),
+  radial-gradient(1.3px 1.3px at 8% 88%,var(--star),transparent),
+  var(--bg);
+  background-attachment:fixed}
