@@ -127,6 +127,19 @@
       db.collection("reviews").add({name:(document.getElementById("bName").value||"").trim().slice(0,20),rating:parseInt(document.getElementById("bRate").value),text:t.slice(0,200),createdAt:firebase.firestore.FieldValue.serverTimestamp()})
         .then(function(){document.getElementById("bText").value="";track("review_post");load();}).catch(function(){alert("잠시 후 다시 시도해주세요.")});
     });
+    // 실시간 이야기방 (Firestore 실시간 리스너)
+    el.querySelector(".board").insertAdjacentHTML("beforeend",
+      '<h3 style="margin-top:22px">🔮 실시간 이야기방</h3><div class="chatbox" id="bChat"></div>'
+      +'<form id="cForm" class="brow" style="margin-top:8px"><input id="cName" maxlength="16" placeholder="닉네임" style="flex:1"><input id="cMsg" maxlength="120" placeholder="메시지를 남겨보세요" style="flex:2"><button class="btn sec" type="submit" style="width:auto;margin:0;padding:12px 16px">전송</button></form>');
+    db.collection("chat").orderBy("createdAt").limitToLast(60).onSnapshot(function(q){
+      var html="";q.forEach(function(d){var m=d.data();html+='<div class="cmsg"><b>'+esc(m.name||"익명")+'</b> '+esc(m.text)+'</div>'});
+      var box=document.getElementById("bChat");if(box){box.innerHTML=html||'<p class="disc" style="margin:8px 0">첫 메시지를 남겨보세요 ✨</p>';box.scrollTop=box.scrollHeight;}
+    },function(){});
+    document.getElementById("cForm").addEventListener("submit",function(e){e.preventDefault();
+      var t=(document.getElementById("cMsg").value||"").trim();if(!t)return;
+      db.collection("chat").add({name:(document.getElementById("cName").value||"").trim().slice(0,16),text:t.slice(0,120),createdAt:firebase.firestore.FieldValue.serverTimestamp()}).catch(function(){});
+      document.getElementById("cMsg").value="";track("chat_send");
+    });
   }
 })();
 

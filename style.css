@@ -163,3 +163,7 @@ details p{color:var(--muted);margin:.6em 0 0}
 .emblem{width:64px;height:64px;display:block}
 .mascot .avatar .emblem{width:52px;height:52px}
 .hero .emblem{width:120px;height:120px;margin:0 auto 4px}
+.chatbox{max-height:230px;overflow-y:auto;background:rgba(10,8,20,.5);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:4px}
+.cmsg{padding:5px 0;font-size:.9rem;color:var(--fg);border-bottom:1px solid rgba(232,197,130,.08)}
+.cmsg:last-child{border-bottom:none}
+.cmsg b{color:var(--gold2);margin-right:6px;font-size:.85rem}
