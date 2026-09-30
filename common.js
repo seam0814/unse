@@ -24,7 +24,9 @@
   window.SITE_NAME='달빛<span>운세</span>';
   function h(s){var d=document.createElement("div");d.innerHTML=s.trim();return d.firstChild}
   var head=document.getElementById("site-header");
-  if(head){head.className="sitehead";head.appendChild(h('<a class="brand" href="'+ROOT+'">'+window.SITE_NAME+'</a>'));head.appendChild(h('<a class="home" href="'+ROOT+'">← 전체 운세</a>'))}
+  if(head){head.className="sitehead";head.appendChild(h('<a class="brand" href="'+ROOT+'">'+window.SITE_NAME+'</a>'));head.appendChild(h('<a class="home" href="'+ROOT+'">← 전체 운세</a>'));
+    var trust=h('<div class="trustbar"><span>🆓 무료·무설치</span><span>🔒 생일·사진 업로드 안 함</span><span>🎯 절기 기준 정확 계산</span></div>');
+    head.parentNode.insertBefore(trust,head.nextSibling);}
   var foot=document.getElementById("site-footer");
   if(foot){foot.className="sitefoot";var links=TOOLS.map(function(t){return '<a href="'+ROOT+t.path+'">'+t.title+'</a>'}).join("");
     foot.appendChild(h('<div class="fnav">'+links+'</div>'));
