@@ -16,9 +16,10 @@
       if(typeof cb==="function")cb();},1500);
   };
   /* 캐릭터(달묘)가 한 글자씩 말하기 */
+  var MOON_SVG='<svg viewBox="0 0 48 48" width="30" height="30" aria-hidden="true"><path fill="#fff" d="M32 6a19 19 0 1 0 10 31A16 16 0 0 1 32 6z"/><circle cx="21" cy="20" r="1.6" fill="#7c5cff"/><circle cx="27" cy="18" r="1.2" fill="#7c5cff"/></svg>';
   window.speak=function(el,text){
     if(!el)return;var w=document.createElement("div");w.className="mascot";
-    w.innerHTML='<div class="avatar">🐱</div><div class="bubble"><span class="say"></span><span class="caret">▋</span></div>';
+    w.innerHTML='<div class="avatar">'+MOON_SVG+'</div><div class="bubble"><span class="say"></span><span class="caret">▋</span></div>';
     el.insertBefore(w,el.firstChild);
     var span=w.querySelector(".say"),caret=w.querySelector(".caret"),i=0;
     (function t(){if(i<=text.length){span.textContent=text.slice(0,i++);setTimeout(t,36)}else if(caret)caret.style.display="none"})();
@@ -115,4 +116,23 @@
         .then(function(){document.getElementById("bText").value="";track("review_post");load();}).catch(function(){alert("잠시 후 다시 시도해주세요.")});
     });
   }
+})();
+
+/* 캔버스 별밤 배경 (반짝임·미세 드리프트) */
+(function(){
+  var c=document.createElement("canvas");c.id="stars";
+  c.style.cssText="position:fixed;inset:0;z-index:-1;pointer-events:none";
+  (document.body||document.documentElement).insertBefore(c,document.body?document.body.firstChild:null);
+  var x=c.getContext("2d"),S=[],W=0,H=0,dpr=Math.min(2,window.devicePixelRatio||1);
+  function dark(){return window.matchMedia&&matchMedia("(prefers-color-scheme:dark)").matches}
+  function resize(){W=c.width=Math.floor(innerWidth*dpr);H=c.height=Math.floor(innerHeight*dpr);
+    c.style.width=innerWidth+"px";c.style.height=innerHeight+"px";
+    var n=Math.min(160,Math.floor(innerWidth*innerHeight/8000));S=[];
+    for(var i=0;i<n;i++)S.push({x:Math.random()*W,y:Math.random()*H,r:(Math.random()*1.2+0.35)*dpr,p:Math.random()*6.28,sp:0.015+Math.random()*0.03,dx:(Math.random()-0.5)*0.04*dpr});}
+  function frame(){x.clearRect(0,0,W,H);var col=dark()?"255,255,255":"124,92,255";
+    for(var i=0;i<S.length;i++){var s=S[i];s.p+=s.sp;s.x+=s.dx;if(s.x<0)s.x=W;if(s.x>W)s.x=0;
+      var a=0.28+0.5*(0.5+0.5*Math.sin(s.p));
+      x.beginPath();x.arc(s.x,s.y,s.r,0,6.2832);x.fillStyle="rgba("+col+","+a.toFixed(3)+")";x.fill();}
+    requestAnimationFrame(frame);}
+  window.addEventListener("resize",resize);resize();frame();
 })();

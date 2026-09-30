@@ -110,3 +110,11 @@ body{background:
   radial-gradient(1.3px 1.3px at 8% 88%,var(--star),transparent),
   var(--bg);
   background-attachment:fixed}
+/* 캔버스 별밤이 보이도록 배경 정리 */
+html{background:var(--bg)}
+body{background:transparent}
+#stars{opacity:.9}
+/* 홈 히어로 빛나는 달 */
+.moon{display:block;margin:6px auto 2px;filter:drop-shadow(0 0 18px rgba(124,92,255,.7));animation:float 5s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.hero{text-align:center}
