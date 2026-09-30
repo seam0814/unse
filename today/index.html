@@ -61,7 +61,7 @@
       var lk=Saju.lucky(me.dayOh,seed);
       $("#reading").innerHTML='<h3>'+m.h+'</h3><p>'+m.p+'</p><p style="color:var(--muted)">오늘의 기운: '+t.dayGanKr+'('+t.dayOh+') · 나의 일간: '+me.dayGanKr+'('+me.dayOh+')</p>';
       $("#lucky").innerHTML='<div class="k"><b>'+lk.color+'</b><span>행운의 색</span></div><div class="k"><b>'+lk.num+'</b><span>행운의 숫자</span></div>';
-      result.classList.add("show");
+      reveal(result);
     }catch(ex){showErr("계산 중 문제가 생겼어요. 날짜를 확인해 주세요.");console.error(ex)}
   });
 })();

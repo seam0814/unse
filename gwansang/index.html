@@ -70,7 +70,7 @@
       rd+='<p>👃 <b>코</b> · '+pick(NOSE,Math.floor(s/13))+'</p>';
       rd+='<p>👄 <b>입</b> · '+pick(MOUTH,Math.floor(s/17))+'</p>';
       rd+='<p style="margin-top:10px">🌟 <b>올해의 한마디</b> — '+pick(YEAR,Math.floor(s/19))+'</p>';
-      $("#reading").innerHTML=rd;result.classList.add("show");
+      $("#reading").innerHTML=rd;reveal(result);
     };img.onerror=function(){showErr("이미지를 읽지 못했어요.")};img.src=lastUrl;
   }
 })();

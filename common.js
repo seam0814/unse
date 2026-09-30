@@ -6,6 +6,14 @@
   if(CLARITY_ID){(function(c,l,a,r,i){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};var t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;var y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y)})(window,document,"clarity","script",CLARITY_ID);}
   window.track=function(n,p){try{if(window.gtag)gtag("event",n,p||{})}catch(e){}try{if(window.clarity)clarity("event",n)}catch(e){}};
   window.store={get:function(k,d){try{var v=localStorage.getItem("unse_"+k);return v===null?d:v}catch(e){return d}},set:function(k,v){try{localStorage.setItem("unse_"+k,v)}catch(e){}}};
+  /* "기운 모으는 중" 연출 후 결과 공개 */
+  window.reveal=function(el,msg){
+    var box=document.createElement("div");box.className="divining";
+    box.innerHTML='<div class="orb"></div><p>'+(msg||"기운을 모으는 중…")+'</p>';
+    el.parentNode.insertBefore(box,el);
+    setTimeout(function(){if(box.parentNode)box.remove();el.classList.add("show");
+      try{el.scrollIntoView({behavior:"smooth",block:"nearest"})}catch(e){}},1400);
+  };
   var TOOLS=[
     {path:"saju/",     ic:"🔮", title:"사주팔자",   desc:"생년월일시로 내 사주 풀이", cat:"운세", pop:true},
     {path:"today/",    ic:"🌙", title:"오늘의 운세", desc:"매일 바뀌는 오늘 운세",    cat:"운세", pop:true},
