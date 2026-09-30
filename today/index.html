@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>오늘의 운세 — 생년월일로 보는 오늘 운세 (달빛운세)</title>
+<meta name="description" content="생년월일을 넣으면 오늘 날짜의 기운과 내 사주를 비교해 오늘의 운세, 행운의 색과 숫자를 알려드립니다. 매일 바뀌어요. 무료·회원가입 없음.">
+<link rel="canonical" href="https://seam0814.github.io/unse/today/">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="wrap">
+  <div id="site-header"></div>
+  <h1>🌙 오늘의 운세</h1>
+  <p class="sub" id="todayLabel">오늘 날짜의 기운과 내 사주를 비교해 풀어드려요.</p>
+  <div class="tool">
+    <div class="field"><label>생년월일 (양력)</label><input id="date" type="date"></div>
+    <button class="btn" id="go">오늘의 운세 보기</button>
+    <div class="err" id="err"></div>
+    <div class="result" id="result">
+      <div class="reading" id="reading"></div>
+      <div class="lucky" id="lucky"></div>
+      <p class="disc">※ 재미로 보는 콘텐츠이며 실제 근거는 없습니다.</p>
+    </div>
+  </div>
+  <div class="copy">
+    <h2>어떻게 보나요?</h2>
+    <p>오늘 날짜의 일간(오늘의 기운)과 내 사주의 일간을 오행 관계로 비교합니다. 오늘 기운이 나를 도와주면 순풍의 날, 내가 눌리면 신중해야 할 날이에요. 날마다 오늘의 기운이 바뀌므로 매일 결과가 달라집니다.</p>
+    <details><summary>매일 결과가 달라지나요?</summary><p>네. 오늘 날짜의 간지가 매일 바뀌기 때문에 같은 사람이라도 날마다 다른 풀이가 나옵니다.</p></details>
+  </div>
+  <div id="site-footer"></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.7.4/lunar.js"></script>
+<script>window.SITE_ROOT="../";</script>
+<script src="../common.js"></script>
+<script src="../saju.js"></script>
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s)};
+  var dateIn=$("#date"),err=$("#err"),result=$("#result");
+  dateIn.value=store.get("birth","");
+  var now=new Date();$("#todayLabel").textContent=(now.getMonth()+1)+"월 "+now.getDate()+"일, 오늘의 기운과 내 사주를 비교해 풀어드려요.";
+  var MSG={
+    생조:{h:"순풍의 날 ⛵",p:"오늘 기운이 나를 밀어줍니다. 도움과 귀인이 따르니 부탁·제안·시작하기 좋은 날. 자신 있게 움직이세요."},
+    설기:{h:"베푸는 날 🌱",p:"에너지가 밖으로 나가는 날. 표현·창작·소통엔 최고지만 과로는 금물. 남을 도우면 그만큼 돌아옵니다."},
+    재성:{h:"성취의 날 💰",p:"목표와 재물의 기운이 열립니다. 실무·거래·결실에 집중하기 좋아요. 벌인 일을 마무리하면 손에 잡히는 성과가."},
+    관성:{h:"신중한 날 🧭",p:"규율과 압박의 기운이 강한 날. 무리한 결정보다 정리·점검·규칙 지키기가 유리. 서두르면 탈이 나요."},
+    비화:{h:"내 페이스의 날 🎯",p:"동료·경쟁의 기운. 협력하면 시너지, 고집 부리면 마찰. 내 리듬대로 꾸준히 가는 게 답입니다."}
+  };
+  function showErr(m){err.textContent=m;err.classList.add("show")}
+  $("#go").addEventListener("click",function(){
+    err.classList.remove("show");result.classList.remove("show");
+    if(!Saju.ready()){showErr("라이브러리를 불러오지 못했어요. 새로고침 해주세요.");return}
+    if(!dateIn.value){showErr("생년월일을 입력하세요.");return}
+    var p=dateIn.value.split("-");store.set("birth",dateIn.value);track("today_view");
+    try{
+      var me=Saju.compute(+p[0],+p[1],+p[2],0,false);
+      var t=Saju.compute(now.getFullYear(),now.getMonth()+1,now.getDate(),now.getHours(),true);
+      var rel=Saju.relation(me.dayOh,t.dayOh),m=MSG[rel]||MSG.비화;
+      var seed=now.getFullYear()*372+(now.getMonth()+1)*31+now.getDate();
+      var lk=Saju.lucky(me.dayOh,seed);
+      $("#reading").innerHTML='<h3>'+m.h+'</h3><p>'+m.p+'</p><p style="color:var(--muted)">오늘의 기운: '+t.dayGanKr+'('+t.dayOh+') · 나의 일간: '+me.dayGanKr+'('+me.dayOh+')</p>';
+      $("#lucky").innerHTML='<div class="k"><b>'+lk.color+'</b><span>행운의 색</span></div><div class="k"><b>'+lk.num+'</b><span>행운의 숫자</span></div>';
+      result.classList.add("show");
+    }catch(ex){showErr("계산 중 문제가 생겼어요. 날짜를 확인해 주세요.");console.error(ex)}
+  });
+})();
+</script>
+</body>
+</html>

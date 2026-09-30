@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>무료 사주팔자 — 생년월일시로 내 사주 풀이 (달빛운세)</title>
+<meta name="description" content="생년월일시를 넣으면 사주팔자(년·월·일·시 천간지지)를 절기 기준으로 정확히 뽑고, 일간 기준 성향과 오행 균형을 풀이합니다. 무료·회원가입 없음.">
+<link rel="canonical" href="https://seam0814.github.io/unse/saju/">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="wrap">
+  <div id="site-header"></div>
+  <h1>🔮 사주팔자 풀이</h1>
+  <p class="sub">생년월일시를 넣으면 내 사주팔자와 타고난 성향을 풀어드려요.</p>
+  <div class="tool">
+    <div class="row2">
+      <div class="field"><label>생년월일 (양력)</label><input id="date" type="date"></div>
+      <div class="field"><label>태어난 시각</label><select id="hour"></select></div>
+    </div>
+    <button class="btn" id="go">내 사주 보기</button>
+    <div class="err" id="err"></div>
+    <div class="result" id="result">
+      <div class="pillars" id="pillars"></div>
+      <div class="elos" id="elos"></div>
+      <div class="reading" id="reading"></div>
+      <p class="disc">※ 재미로 보는 콘텐츠이며 실제 근거는 없습니다.</p>
+    </div>
+  </div>
+  <div class="copy">
+    <h2>사주팔자란?</h2>
+    <p>태어난 연·월·일·시를 각각 천간(天干)과 지지(地支) 두 글자로 나타낸 여덟 글자입니다. 이 중 <b>태어난 날의 천간(일간)</b>이 '나 자신'을 상징하며, 여덟 글자에 담긴 오행(목·화·토·금·수)의 균형으로 성향과 기운을 봅니다.</p>
+    <h2>자주 묻는 질문</h2>
+    <details><summary>태어난 시각을 모르면요?</summary><p>'모름'을 선택하면 시주(時柱)를 빼고 년·월·일 기준으로 풀이합니다. 다만 시각을 알면 더 정확합니다.</p></details>
+    <details><summary>양력·음력 어느 걸 넣나요?</summary><p>양력 생일을 넣으세요. 절기를 기준으로 자동 계산됩니다.</p></details>
+    <details><summary>입력한 생일이 저장되나요?</summary><p>아니요. 모든 계산은 브라우저에서 이뤄지며 서버로 전송·저장되지 않습니다.</p></details>
+  </div>
+  <div id="site-footer"></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.7.4/lunar.js"></script>
+<script>window.SITE_ROOT="../";</script>
+<script src="../common.js"></script>
+<script src="../saju.js"></script>
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s)};
+  var dateIn=$("#date"),hourIn=$("#hour"),err=$("#err"),result=$("#result");
+  var opt='<option value="-1">모름</option>';for(var i=0;i<24;i++){opt+='<option value="'+i+'">'+(i<10?"0"+i:i)+':00 ~ '+(i<10?"0"+i:i)+':59</option>'}
+  hourIn.innerHTML=opt;
+  dateIn.value=store.get("birth","");if(store.get("bhour",""))hourIn.value=store.get("bhour");
+  function showErr(m){err.textContent=m;err.classList.add("show")}
+  $("#go").addEventListener("click",function(){
+    err.classList.remove("show");result.classList.remove("show");
+    if(!Saju.ready()){showErr("만세력 라이브러리를 불러오지 못했어요. 새로고침 해주세요.");return}
+    if(!dateIn.value){showErr("생년월일을 입력하세요.");return}
+    var p=dateIn.value.split("-"),hv=parseInt(hourIn.value),hasTime=hv>=0;
+    store.set("birth",dateIn.value);store.set("bhour",hourIn.value);track("saju_view");
+    try{
+      var r=Saju.compute(+p[0],+p[1],+p[2],hasTime?hv:0,hasTime);
+      var labs={year:"년주",month:"월주",day:"일주 (나)",time:"시주"};
+      var order=hasTime?["year","month","day","time"]:["year","month","day"];
+      var ph="";order.forEach(function(k){var x=r.P[k];
+        ph+='<div class="pillar"><div class="lab">'+labs[k]+'</div><div class="gz">'+x.ganKr+x.zhiKr+'</div><div class="oh">'+x.ganOh+'·'+x.zhiOh+'</div></div>'});
+      $("#pillars").innerHTML=ph;
+      var eh="";for(var k in r.el){eh+='<span class="elo">'+k+' '+r.el[k]+'</span>'}$("#elos").innerHTML=eh;
+      var dm=Saju.dayMaster(r.dayGanKr),sw=Saju.strongestWeakest(r.el);
+      var rd='<h3>일간 '+r.dayGanKr+' — '+dm.t+'</h3><p>'+dm.d+'</p>';
+      rd+='<h3>오행 균형</h3><p>가장 강한 기운은 <b>'+sw.strong+'</b>, 가장 약한 기운은 <b>'+sw.weak+'</b>이에요. '+
+        (sw.weak? '약한 '+sw.weak+' 기운을 채워주는 <b>'+Saju.OH_COLOR[sw.weak]+'</b> 계열을 곁에 두면 균형에 도움이 돼요.':'')+'</p>';
+      rd+='<p>띠는 <b>'+r.animal+'</b>띠입니다.</p>';
+      $("#reading").innerHTML=rd;
+      result.classList.add("show");
+    }catch(ex){showErr("계산 중 문제가 생겼어요. 날짜를 확인해 주세요.");console.error(ex)}
+  });
+})();
+</script>
+</body>
+</html>
