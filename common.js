@@ -1,5 +1,8 @@
 (function(){
   var ROOT=window.SITE_ROOT||"./";
+  (function(){var l=document.createElement("link");l.rel="stylesheet";
+    l.href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Serif+KR:wght@500;700&display=swap";
+    document.head.appendChild(l);})();
   var GA_ID="",CLARITY_ID="";
   if(GA_ID){var gs=document.createElement("script");gs.async=true;gs.src="https://www.googletagmanager.com/gtag/js?id="+GA_ID;document.head.appendChild(gs);
     window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments)};gtag("js",new Date());gtag("config",GA_ID);}
@@ -16,7 +19,15 @@
       if(typeof cb==="function")cb();},1500);
   };
   /* 캐릭터(달묘)가 한 글자씩 말하기 */
-  var MOON_SVG='<svg viewBox="0 0 48 48" width="30" height="30" aria-hidden="true"><path fill="#fff" d="M32 6a19 19 0 1 0 10 31A16 16 0 0 1 32 6z"/><circle cx="21" cy="20" r="1.6" fill="#7c5cff"/><circle cx="27" cy="18" r="1.2" fill="#7c5cff"/></svg>';
+  var MOON_SVG='<svg class="emblem" viewBox="0 0 120 120" aria-hidden="true">'
+    +'<defs><radialGradient id="au" cx="50%" cy="45%" r="55%"><stop offset="0%" stop-color="#b79bff" stop-opacity=".6"/><stop offset="55%" stop-color="#7b5cff" stop-opacity=".14"/><stop offset="100%" stop-color="#7b5cff" stop-opacity="0"/></radialGradient>'
+    +'<linearGradient id="gd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f5e2b0"/><stop offset="1" stop-color="#d29b40"/></linearGradient></defs>'
+    +'<circle cx="60" cy="60" r="58" fill="url(#au)"/>'
+    +'<g class="ring"><circle cx="60" cy="60" r="47" fill="none" stroke="#e8c582" stroke-opacity=".5" stroke-width="1" stroke-dasharray="1.5 8"/></g>'
+    +'<g class="ring2"><circle cx="60" cy="60" r="40" fill="none" stroke="#e8c582" stroke-opacity=".35" stroke-width="1" stroke-dasharray="0.5 6"/></g>'
+    +'<circle cx="60" cy="60" r="35" fill="none" stroke="url(#gd)" stroke-width="1.3" stroke-opacity=".85"/>'
+    +'<path fill="url(#gd)" d="M70 37a24 24 0 1 0 12 41A20 20 0 0 1 70 37z"/>'
+    +'<g fill="#f5e2b0"><path d="M46 48l1.5 3.8 3.8 1.5-3.8 1.5L46 58.6l-1.5-3.8L40.7 53.3l3.8-1.5z"/><circle cx="80" cy="53" r="1.5"/><circle cx="53" cy="76" r="1.1"/><circle cx="74" cy="86" r="1"/></g></svg>';
   window.speak=function(el,text){
     if(!el)return;var w=document.createElement("div");w.className="mascot";
     w.innerHTML='<div class="avatar">'+MOON_SVG+'</div><div class="bubble"><span class="say"></span><span class="caret">▋</span></div>';
@@ -41,6 +52,7 @@
   if(foot){foot.className="sitefoot";var links=TOOLS.map(function(t){return '<a href="'+ROOT+t.path+'">'+t.title+'</a>'}).join("");
     foot.appendChild(h('<div class="fnav">'+links+'</div>'));
     foot.appendChild(h('<div>본 콘텐츠는 재미를 위한 것으로 실제 근거가 없습니다 · 입력·사진은 서버로 전송되지 않습니다 · <a href="'+ROOT+'privacy.html">개인정보처리방침</a></div>'))}
+  var emb=document.getElementById("emblem");if(emb)emb.innerHTML=MOON_SVG;
   var grid=document.getElementById("tools");
   if(grid){function card(t){return '<a class="toolcard" href="'+ROOT+t.path+'">'+(t.pop?'<span class="pop">인기</span>':'')+'<span class="ic">'+t.ic+'</span><b>'+t.title+'</b><small>'+t.desc+'</small></a>'}
     var g=h('<div class="grid"></div>');TOOLS.forEach(function(t){g.appendChild(h(card(t)))});grid.appendChild(g)}
@@ -129,7 +141,7 @@
     c.style.width=innerWidth+"px";c.style.height=innerHeight+"px";
     var n=Math.min(160,Math.floor(innerWidth*innerHeight/8000));S=[];
     for(var i=0;i<n;i++)S.push({x:Math.random()*W,y:Math.random()*H,r:(Math.random()*1.2+0.35)*dpr,p:Math.random()*6.28,sp:0.015+Math.random()*0.03,dx:(Math.random()-0.5)*0.04*dpr});}
-  function frame(){x.clearRect(0,0,W,H);var col=dark()?"255,255,255":"124,92,255";
+  function frame(){x.clearRect(0,0,W,H);var col="245,234,205";
     for(var i=0;i<S.length;i++){var s=S[i];s.p+=s.sp;s.x+=s.dx;if(s.x<0)s.x=W;if(s.x>W)s.x=0;
       var a=0.28+0.5*(0.5+0.5*Math.sin(s.p));
       x.beginPath();x.arc(s.x,s.y,s.r,0,6.2832);x.fillStyle="rgba("+col+","+a.toFixed(3)+")";x.fill();}
