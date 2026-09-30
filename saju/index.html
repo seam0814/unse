@@ -24,6 +24,7 @@
       <div class="pillars" id="pillars"></div>
       <div class="elos" id="elos"></div>
       <div class="reading" id="reading"></div>
+      <button class="btn sec" id="card">📸 결과 이미지로 저장·공유</button>
       <p class="disc">※ 재미로 보는 콘텐츠이며 실제 근거는 없습니다.</p>
     </div>
   </div>
@@ -45,7 +46,8 @@
 <script>
 (function(){
   var $=function(s){return document.querySelector(s)};
-  var dateIn=$("#date"),hourIn=$("#hour"),err=$("#err"),result=$("#result");
+  var dateIn=$("#date"),hourIn=$("#hour"),err=$("#err"),result=$("#result"),lastCard=null;
+  $("#card").addEventListener("click",function(){if(lastCard)shareCard(lastCard)});
   var opt='<option value="-1">모름</option>';for(var i=0;i<24;i++){opt+='<option value="'+i+'">'+(i<10?"0"+i:i)+':00 ~ '+(i<10?"0"+i:i)+':59</option>'}
   hourIn.innerHTML=opt;
   dateIn.value=store.get("birth","");if(store.get("bhour",""))hourIn.value=store.get("bhour");
@@ -70,6 +72,7 @@
         (sw.weak? '약한 '+sw.weak+' 기운을 채워주는 <b>'+Saju.OH_COLOR[sw.weak]+'</b> 계열을 곁에 두면 균형에 도움이 돼요.':'')+'</p>';
       rd+='<p>띠는 <b>'+r.animal+'</b>띠입니다.</p>';
       $("#reading").innerHTML=rd;
+      lastCard={emoji:"🔮",title:"내 일간 '"+r.dayGanKr+"' "+dm.t,lines:["강한 기운 "+sw.strong+" · 약한 기운 "+sw.weak,r.animal+"띠"],share:"내 사주 일간은 '"+r.dayGanKr+"' "+dm.t+"! 너도 봐봐 ✨"};
       reveal(result);
     }catch(ex){showErr("계산 중 문제가 생겼어요. 날짜를 확인해 주세요.");console.error(ex)}
   });

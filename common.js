@@ -35,6 +35,32 @@
   if(grid){function card(t){return '<a class="toolcard" href="'+ROOT+t.path+'">'+(t.pop?'<span class="pop">인기</span>':'')+'<span class="ic">'+t.ic+'</span><b>'+t.title+'</b><small>'+t.desc+'</small></a>'}
     var g=h('<div class="grid"></div>');TOOLS.forEach(function(t){g.appendChild(h(card(t)))});grid.appendChild(g)}
 
+  /* ===== 결과 공유 카드 (설정 0, 순수 클라이언트) ===== */
+  function rr(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()}
+  function wrapC(x,t,cx,y,maxW,lh){var line="",yy=y;for(var i=0;i<t.length;i++){var test=line+t[i];
+    if(x.measureText(test).width>maxW&&line){x.fillText(line,cx,yy);line=t[i];yy+=lh}else line=test}
+    if(line)x.fillText(line,cx,yy);return yy+lh}
+  window.shareCard=function(o){
+    var W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;var x=c.getContext("2d");
+    var g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,"#7c5cff");g.addColorStop(1,"#b06cff");x.fillStyle=g;x.fillRect(0,0,W,H);
+    x.fillStyle="rgba(255,255,255,0.12)";rr(x,70,190,W-140,H-380,44);x.fill();
+    x.textAlign="center";x.fillStyle="#fff";
+    x.font="700 46px sans-serif";x.fillText("🌙 달빛운세",W/2,140);
+    x.font="150px sans-serif";x.fillText(o.emoji||"🔮",W/2,430);
+    x.font="800 78px sans-serif";var yy=wrapC(x,o.title||"",W/2,560,W-240,92);
+    x.font="400 44px sans-serif";x.fillStyle="rgba(255,255,255,0.95)";
+    (o.lines||[]).forEach(function(ln){yy=wrapC(x,ln,W/2,yy+20,W-260,60)});
+    x.font="600 36px sans-serif";x.fillStyle="rgba(255,255,255,0.9)";x.fillText("seam0814.github.io/unse",W/2,H-96);
+    x.font="400 30px sans-serif";x.fillStyle="rgba(255,255,255,0.75)";x.fillText("※ 재미로 보는 운세",W/2,H-50);
+    c.toBlob(function(blob){if(!blob)return;var file=null;
+      try{file=new File([blob],"unse.png",{type:"image/png"})}catch(e){}
+      if(file&&navigator.canShare&&navigator.canShare({files:[file]})){
+        navigator.share({files:[file],title:"달빛운세",text:o.share||"내 운세 결과 ✨"}).then(function(){track("card_share")}).catch(function(){});
+      }else{var u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download="달빛운세.png";a.click();
+        setTimeout(function(){URL.revokeObjectURL(u)},1000);track("card_download");}
+    },"image/png");
+  };
+
   /* ===== 후기판·조회수 (Firebase) — 집에서 config 넣으면 자동 활성화 ===== */
   var FIREBASE_CONFIG={}; // 여기에 firebaseConfig 객체 붙여넣기 (apiKey, projectId 등)
   var revEl=document.getElementById("reviews");

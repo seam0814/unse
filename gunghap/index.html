@@ -72,9 +72,8 @@
     }catch(ex){showErr("계산 중 문제가 생겼어요. 날짜를 확인해 주세요.");console.error(ex)}
   });
   $("#share").addEventListener("click",function(){track("gunghap_share");
-    var txt="우리 궁합 "+lastScore+"점! 달빛운세에서 확인해봐 ✨";var url=location.href;
-    if(navigator.share){navigator.share({title:"달빛운세 궁합",text:txt,url:url}).catch(function(){})}
-    else if(navigator.clipboard){navigator.clipboard.writeText(txt+" "+url);alert("결과가 복사됐어요! 붙여넣기 해보세요.")}
+    var band=lastScore>=85?"천생연분! 💞":lastScore>=70?"제법 잘 어울려요 😊":lastScore>=58?"노력하면 좋아져요 🙂":"자극이 강한 밀당 🔥";
+    shareCard({emoji:"💘",title:"우리 궁합 "+lastScore+"점",lines:[band],share:"우리 궁합 "+lastScore+"점! 너도 해봐 ✨"});
   });
 })();
 </script>
